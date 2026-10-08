@@ -1,0 +1,46 @@
+# docker-compose.yml
+# Levanta TODO el sistema FastBite (microservicios + RabbitMQ) con un solo comando:
+#   docker-compose up
+#
+# TODO: completa cada servicio siguiendo el patron de "rabbitmq" que ya esta hecho.
+
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  users-service:
+    build: ../../semana2-fastbite-v2/users-service
+    ports:
+      - "8001:8001"
+    # TODO 1: agrega command para correr uvicorn en el puerto 8001
+
+  menu-service:
+    build: ../../semana2-fastbite-v2/menu-service
+    ports:
+      - "8002:8002"
+    # TODO 2: agrega command para correr uvicorn en el puerto 8002
+
+  orders-service:
+    build: ../../semana3-fastbite-v3/orders-service
+    ports:
+      - "8003:8003"
+    depends_on:
+      - rabbitmq
+      - users-service
+      - menu-service
+    # TODO 3: agrega command para correr uvicorn en el puerto 8003
+
+  gateway-service:
+    build: ../gateway-service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - users-service
+      - menu-service
+      - orders-service
+    # TODO 4: agrega command para correr uvicorn en el puerto 8000

@@ -1,0 +1,22 @@
+# Dockerfile de ejemplo para orders-service.
+# Repite este mismo patron (cambiando el nombre de la carpeta) para
+# users-service, menu-service y gateway-service.
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# TODO 1: copia el archivo de dependencias primero (aprovecha el cache de Docker)
+COPY requirements.txt .
+
+# TODO 2: instala las dependencias
+RUN pip install --no-cache-dir -r requirements.txt
+
+# TODO 3: copia el resto del codigo del servicio
+COPY . .
+
+# TODO 4: expone el puerto en el que corre este servicio (ej. 8003 para orders-service)
+EXPOSE 8003
+
+# TODO 5: comando de arranque (ajusta el nombre del archivo/puerto segun el servicio)
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
